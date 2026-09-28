@@ -28,6 +28,17 @@ constexpr std::size_t kMaxCoarsePeaks = 6;
 
 constexpr double kDuplicateFraction = 0.005;
 
+// A grid counts as half empty - and so as twice the real event rate - below
+// this filling. Measuring fill on real material put the readings that are
+// genuinely an octave too fast at 0.30 and 0.54, while readings that are
+// merely accented every other beat sat at 0.79 and above.
+constexpr double kHalfEmptyFilling = 0.65;
+
+// How close the two readings' comb evidence has to be before filling is asked
+// to separate them. At or above this the slower reading is a real contender;
+// well below it the search has already made up its mind.
+constexpr double kTossUpCombRatio = 0.8;
+
 // Deliberately gentle. The prior exists to nudge genuinely ambiguous material
 // toward ordinary tempos; at full strength it overrode clearly correct
 // readings (it turned a 60 BPM click track into 120), so it is raised to a
@@ -631,7 +642,7 @@ TempoResult estimateTempo (const OnsetEnvelope& envelope, const TempoConfig& con
         // the comb score's opposite bias rather than measuring anything.
         const double prior = std::pow (priorWeight (candidate.bpm, config), kPriorExponent);
 
-        candidate.score = combNorm * candidate.filling * prior;
+        candidate.score = combNorm * prior;
     }
 
     // Tuning aid: set TMIX_DEBUG_TEMPO=1 to see how each candidate was scored.
@@ -674,7 +685,51 @@ TempoResult estimateTempo (const OnsetEnvelope& envelope, const TempoConfig& con
     std::sort (unique.begin(), unique.end(),
                [] (const Candidate& a, const Candidate& b) { return a.score > b.score; });
 
-    const Candidate& best = unique.front();
+    // The octave question, asked once, where it is actually well posed.
+    //
+    // Filling says whether the alternate positions of a grid are empty. That
+    // is exactly what separates a reading from its own octave - and it is the
+    // only question it answers. Multiplied into every candidate's score it
+    // also handed a high mark to the 3:2 relative (150 for material at 100),
+    // where two equally filled halves follow from the ratio of the periods
+    // rather than from anything in the music.
+    //
+    // So it is asked here instead, between the strongest reading and its half.
+    // Only when the slower of the two is the better filled is the faster one
+    // an octave rather than the rate a listener counts.
+    std::size_t bestIndex = 0;
+    {
+        const Candidate& fastest = unique.front();
+        const double halfBpm = fastest.bpm / 2.0;
+
+        for (std::size_t i = 1; i < unique.size(); ++i)
+        {
+            if (std::fabs (unique[i].bpm - halfBpm) / halfBpm > kDuplicateFraction)
+                continue;
+
+            // Filling decides a toss-up, and only a toss-up.
+            //
+            // When both readings are equally periodic - an eighth-note pulse is
+            // as regular at 150 as at 75 - the search has nothing to choose
+            // between them and filling is the only evidence left. When it
+            // already prefers one by a clear margin, there is no tie to break:
+            // asking anyway overturned correct answers on material that
+            // accents every other beat, where the faster grid is genuinely
+            // half empty but is still the rate a listener counts.
+            const double slowerEvidence = fastest.combScore > 0.0
+                ? unique[i].combScore / fastest.combScore
+                : 0.0;
+
+            if (fastest.filling < kHalfEmptyFilling
+                && unique[i].filling > fastest.filling
+                && slowerEvidence > kTossUpCombRatio)
+                bestIndex = i;
+
+            break;
+        }
+    }
+
+    const Candidate& best = unique[bestIndex];
 
     result.valid              = true;
     result.rawBpm             = best.bpm;
@@ -684,7 +739,9 @@ TempoResult estimateTempo (const OnsetEnvelope& envelope, const TempoConfig& con
     result.phaseConcentration = best.alignmentProminence;
 
     // ---- confidence ----
-    const double runnerUp = unique.size() > 1 ? unique[1].score : 0.0;
+    const double runnerUp = unique.size() > 1
+        ? unique[bestIndex == 0 ? 1 : 0].score
+        : 0.0;
     const double margin = best.score > 0.0
         ? std::max (0.0, best.score - runnerUp) / best.score
         : 0.0;

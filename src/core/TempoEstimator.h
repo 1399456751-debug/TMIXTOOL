@@ -65,8 +65,8 @@ struct TempoConfig
     // folded by octaves into a range the user declares their material lives
     // in. That is predictable, it is under their control, and it is honest
     // about what is actually being decided.
-    double preferredMinBpm = 70.0;
-    double preferredMaxBpm = 150.0;
+    double preferredMinBpm = 60.0;
+    double preferredMaxBpm = 180.0;
 };
 
 // Estimates tempo, beat phase and a confidence from an onset envelope.

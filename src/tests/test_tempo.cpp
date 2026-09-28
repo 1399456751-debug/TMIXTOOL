@@ -194,22 +194,24 @@ TMIX_TEST (Tempo_AccentedFourKeepsTheBeat)
 
 // Sixteenth-note hats under a kick on every beat.
 //
-// This is the case that used to come back at three halves of the true tempo.
-// 150 is the 3:2 relative of 100, not an octave of it, so the octave-folding
-// safety net cannot help. Its grid sits on plenty of real onsets - the hats
-// are everywhere - and its two grid halves happen to be filled equally, which
-// is exactly the shape that used to win the filling ratio.
+// The densest regular stream runs at twice the beat rate, so the search is
+// expected to prefer 200 and the octave folding is what brings it back - the
+// same shape as the four-on-the-floor case above, one subdivision deeper.
+//
+// What makes it worth pinning is the 3:2 relative. An earlier scoring stage
+// handed 150 a high mark on material like this, and 150 is not an octave of
+// 100, so folding could not rescue it: the answer simply came back wrong.
 TMIX_TEST (Tempo_SixteenthHatsKeepTheBeat)
 {
     const auto envelope = analyse (tmixsupport::sixteenthHats (100.0, kSourceRate, 30.0));
 
-    const auto result = tmix::estimateTempo (envelope, wideRange());
+    const auto result = tmix::estimateTempo (envelope);
 
     TMIX_REQUIRE (result.valid);
-    if (std::fabs (result.rawBpm - 100.0) > 1.0)
-        std::printf ("      got %.4f, wanted 100\n", result.rawBpm);
+    if (std::fabs (result.bpm - 100.0) > 1.0)
+        std::printf ("      got %.4f, wanted 100\n", result.bpm);
 
-    TMIX_CHECK_NEAR (result.rawBpm, 100.0, 1.0);
+    TMIX_CHECK_NEAR (result.bpm, 100.0, 1.0);
 }
 
 // White noise has no tempo. Claiming one with high confidence would be worse
