@@ -1,0 +1,30 @@
+// Installer UI.
+//
+// Declared as UTF-8 so the Chinese captions below survive the resource
+// compiler; CMake passes /utf-8 alongside.
+
+#pragma code_page(65001)
+
+#include <windows.h>
+#include "resource.h"
+
+IDI_APP ICON "assets\\tmixtool.ico"
+
+IDD_SETUP DIALOGEX 0, 0, 306, 178
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TMIXTOOL 安装程序"
+FONT 9, "Microsoft YaHei UI", 400, 0, 0x86
+BEGIN
+    ICON            IDI_APP, IDC_STATIC, 12, 12, 20, 20
+    LTEXT           "TMIXTOOL", IDC_TITLE, 46, 12, 200, 12
+    LTEXT           "混音时间参考  ·  版本 1.0", IDC_SUBTITLE, 48, 26, 220, 10
+    LTEXT           "将安装到：", IDC_STATIC, 14, 52, 280, 10
+    LTEXT           "", IDC_DESTPATH, 14, 64, 280, 10
+    CONTROL         "在桌面创建快捷方式", IDC_DESKTOP, "Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP, 14, 88, 200, 10
+    LTEXT           "", IDC_STATUS, 14, 108, 280, 10
+    CONTROL         "", IDC_PROGRESS, "msctls_progress32", WS_BORDER,
+                    14, 122, 280, 8
+    DEFPUSHBUTTON   "安装", IDOK, 152, 146, 66, 18
+    PUSHBUTTON      "取消", IDCANCEL, 226, 146, 66, 18
+END

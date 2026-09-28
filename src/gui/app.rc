@@ -1,0 +1,7 @@
+// Windows executable resources.
+//
+// This is what Explorer shows for the .exe and what the shell picks up for
+// shortcuts and pinned items. Qt's setWindowIcon covers the window itself;
+// without this the file would still carry the default blank document icon.
+
+IDI_ICON1 ICON "assets/tmixtool.ico"
