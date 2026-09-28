@@ -17,7 +17,7 @@ FONT 9, "Microsoft YaHei UI", 400, 0, 0x86
 BEGIN
     ICON            IDI_APP, IDC_STATIC, 12, 12, 20, 20
     LTEXT           "TMIXTOOL", IDC_TITLE, 46, 12, 200, 12
-    LTEXT           "混音时间参考  ·  版本 1.1.1", IDC_SUBTITLE, 48, 26, 220, 10
+    LTEXT           "混音时间参考  ·  版本 1.1.2", IDC_SUBTITLE, 48, 26, 220, 10
     LTEXT           "将安装到：", IDC_STATIC, 14, 52, 280, 10
     LTEXT           "", IDC_DESTPATH, 14, 64, 280, 10
     CONTROL         "在桌面创建快捷方式", IDC_DESKTOP, "Button",
