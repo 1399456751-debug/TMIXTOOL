@@ -474,6 +474,7 @@ ApplicationWindow {
                             Card {
                                 Layout.fillWidth: true
                                 title: Lang.t("attack")
+                                subtitle: Lang.t("attackSub")
 
                                 TimeTable {
                                     Layout.fillWidth: true
@@ -513,6 +514,7 @@ ApplicationWindow {
                             Card {
                                 Layout.fillWidth: true
                                 title: Lang.t("reverb")
+                                subtitle: Lang.t("reverbSub")
 
                                 TimeTable {
                                     Layout.fillWidth: true

@@ -28,8 +28,10 @@ struct DelayPreset
     double      rightHz = 0.0;
 };
 
-// A reverb decay time with a plain-language note about where it tends to be
-// used.
+// A reverb decay time with a plain-language note about what it does to the
+// beat. The note describes the timing, never a room: which room a decay
+// resembles depends on its milliseconds, and the same note value is a
+// different number of milliseconds at every tempo.
 struct ReverbRow
 {
     std::string label;
@@ -69,7 +71,9 @@ public:
     // level-control setting that happens to be in time.
     std::vector<TimeValue> releaseSyncedOptions() const;
 
-    // Reverb decay times, shortest first.
+    // Reverb decay times as note values at this tempo, shortest first. Note
+    // values rather than millisecond presets because the point of the table is
+    // the tail landing on the beat; the milliseconds come with it.
     std::vector<ReverbRow> reverbDecays() const;
 
     // Pre-delay, from glued to the source through to a distinct slap. Values

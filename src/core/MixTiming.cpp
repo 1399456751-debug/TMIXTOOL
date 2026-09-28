@@ -123,12 +123,23 @@ std::vector<TimeValue> MixTiming::releaseSyncedOptions() const
 
 std::vector<ReverbRow> MixTiming::reverbDecays() const
 {
+    // The decay is a note value at this tempo: the tail dies on the beat it is
+    // named after, so the reverb never smears into the next event. That is the
+    // whole claim these rows make.
+    //
+    // What they deliberately do not say is what room the result sounds like.
+    // Room size is a property of the decay in milliseconds, and the same note
+    // value is a different number of milliseconds at every tempo - an eighth
+    // note is 250 ms at 120 BPM and 500 ms at 60. Calling the eighth "a very
+    // small room" and the bar "a hall" was reading a fixed label off a value
+    // that moves. The millisecond column is there for the room question; read
+    // it, do not have it asserted.
     const struct { const char* label; double beats; const char* use; } rows[] = {
-        { "1/8",   0.5, "Very small room - air, no tail"        },
-        { "1/4",   1.0, "Tight plate - drums keep their punch"  },
-        { "1/2",   2.0, "General purpose - vocals and drums"    },
-        { "1 bar", 4.0, "Hall - lets a phrase ring out"         },
-        { "2 bars", 8.0, "Ambience - pads and sparse arrangements" },
+        { "1/8",   0.5, "Tail dies on the offbeat - air, no smear"      },
+        { "1/4",   1.0, "Tail dies on the next beat - punch stays intact" },
+        { "1/2",   2.0, "Tail carries one beat past the hit - general purpose" },
+        { "1 bar", 4.0, "Tail rings for the whole bar - lets a phrase breathe" },
+        { "2 bars", 8.0, "Tail spans two bars - pads and sparse arrangements" },
     };
 
     std::vector<ReverbRow> values;
