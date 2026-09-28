@@ -16,6 +16,11 @@ ApplicationWindow {
 
     AnalysisController { id: controller }
 
+    // The reference tables follow whatever tempo is current - measured or
+    // typed in - so nothing below needs an audio file to be useful. Tempo is
+    // also the one input the tool needs; key and tuning only decorate it.
+    readonly property bool hasTempo: controller.bpm > 0
+
     // A file handed to the application on the command line opens immediately,
     // which is also what makes "Open with" work from the shell.
     Component.onCompleted: {
@@ -340,6 +345,9 @@ ApplicationWindow {
                 }
 
                 // ---- manual tempo ----------------------------------------
+                // Always available: the whole reference sheet is derivable from
+                // a tempo alone, so there is no reason to make the user supply
+                // a file before they can use the tool.
                 Rectangle {
                     Layout.fillWidth: true
                     implicitHeight: manualRow.implicitHeight + Theme.pad
@@ -347,7 +355,6 @@ ApplicationWindow {
                     radius: Theme.radius
                     border.width: 1
                     border.color: Theme.border
-                    visible: controller.hasResult
 
                     RowLayout {
                         id: manualRow
@@ -368,8 +375,11 @@ ApplicationWindow {
                             }
                         }
 
+                        // Only meaningful once an analysis has produced a value
+                        // to go back to.
                         Button {
                             text: Lang.t("restore")
+                            enabled: controller.hasResult
                             onClicked: controller.restoreDetectedTempo()
                         }
                     }
@@ -393,7 +403,7 @@ ApplicationWindow {
                     anchors.centerIn: parent
                     width: Math.min (parent.width * 0.75, 460)
                     spacing: 8
-                    visible: !controller.hasResult
+                    visible: !window.hasTempo
 
                     Text {
                         Layout.fillWidth: true
@@ -418,7 +428,7 @@ ApplicationWindow {
                 Flickable {
                     id: scroller
                     anchors.fill: parent
-                    visible: controller.hasResult
+                    visible: window.hasTempo
                     clip: true
                     contentWidth: width
                     contentHeight: Math.max (colA.implicitHeight, colB.implicitHeight)
