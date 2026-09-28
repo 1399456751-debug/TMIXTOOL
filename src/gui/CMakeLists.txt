@@ -29,6 +29,8 @@ qt_add_qml_module(TMIXTOOL
     SOURCES
         AnalysisController.cpp
         AnalysisController.h
+        WindowPin.cpp
+        WindowPin.h
     QML_FILES
         Main.qml
         Theme.qml

@@ -21,6 +21,11 @@ ApplicationWindow {
     // also the one input the tool needs; key and tuning only decorate it.
     readonly property bool hasTempo: controller.bpm > 0
 
+    WindowPin {
+        id: windowPin
+        window: window
+    }
+
     // A file handed to the application on the command line opens immediately,
     // which is also what makes "Open with" work from the shell.
     Component.onCompleted: {
@@ -83,6 +88,16 @@ ApplicationWindow {
                     color: Theme.textFaint
                     font.family: Theme.fontFamily
                     font.pixelSize: 12
+                }
+
+                // Sits with the other window-level controls, not with the
+                // analysis ones: it does nothing to the numbers.
+                Button {
+                    text: Lang.t("pin")
+                    flat: true
+                    checkable: true
+                    checked: windowPin.pinned
+                    onClicked: windowPin.pinned = checked
                 }
 
                 Button {
