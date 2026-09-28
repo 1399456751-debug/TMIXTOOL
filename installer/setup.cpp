@@ -25,7 +25,7 @@
 namespace {
 
 constexpr const wchar_t* kAppName    = L"TMIXTOOL";
-constexpr const wchar_t* kVersion    = L"1.0";
+constexpr const wchar_t* kVersion    = L"1.1";
 constexpr const wchar_t* kExeName    = L"TMIXTOOL.exe";
 constexpr const wchar_t* kSetupName  = L"uninstall.exe";
 constexpr const wchar_t* kUninstallKey =
