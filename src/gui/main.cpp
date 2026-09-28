@@ -10,7 +10,7 @@ int main (int argc, char** argv)
 
     QGuiApplication::setApplicationName ("TMIXTOOL");
     QGuiApplication::setOrganizationName ("TMIXTOOL");
-    QGuiApplication::setApplicationVersion ("1.1");
+    QGuiApplication::setApplicationVersion ("1.1.1");
 
     // Window and taskbar icon. The .rc resource covers the file icon in
     // Explorer; this covers the running window, and both are needed.

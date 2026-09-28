@@ -17,7 +17,7 @@ import shutil
 import subprocess
 import sys
 
-VERSION = "1.1"
+VERSION = "1.1.1"
 LAUNCHER = "setup.exe"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
