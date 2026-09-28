@@ -13,6 +13,18 @@ qt_add_executable(TMIXTOOL
     app.rc
 )
 
+# rc.exe pulls assets/tmixtool.ico in through app.rc, and CMake cannot see
+# that: listing app.rc as a source only tracks edits to the .rc itself.
+# Replacing the icon therefore rebuilt nothing and left the .exe carrying the
+# previous one, with no warning and nothing in the build output to show for it.
+# Naming the icon here is what makes the resource recompile.
+#
+# The qt_add_resources copy below is a separate thing with its own dependency
+# tracking, which is why the icon inside the Qt resource bundle stayed current
+# while the one Explorer reads went stale.
+set_property(SOURCE app.rc PROPERTY OBJECT_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/tmixtool.ico")
+
 # qt_add_resources rather than a .qrc listed in the sources: AUTORCC is not
 # switched on by qt_standard_project_setup, so a plain .qrc was silently
 # ignored and the icon and artwork never made it into the binary.

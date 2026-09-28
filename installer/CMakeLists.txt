@@ -7,6 +7,11 @@ add_executable(TMIXSetup WIN32
     setup.rc
 )
 
+# Same trap as the GUI target: setup.rc names the icon, so the icon has to be
+# declared as a dependency or replacing it rebuilds nothing.
+set_property(SOURCE setup.rc PROPERTY OBJECT_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/tmixtool.ico")
+
 target_include_directories(TMIXSetup PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # shell32 for the shell link and known folders, ole32 for COM, comctl32 for the

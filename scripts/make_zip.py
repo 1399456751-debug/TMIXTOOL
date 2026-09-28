@@ -17,7 +17,7 @@ import shutil
 import sys
 import zipfile
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 FOLDER = "TMIXTOOL"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
